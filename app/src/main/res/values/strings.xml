@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Fingerprint Dialog Sample</string>
     <string name="action_settings">Settings</string>
+    <string name="authenticate_instructions">Click the button below to authenticate your fingerprint.</string>
+    <string name="cancel">Cancel</string>
+    <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again.</string>
+    <string name="touch_sensor">Touch sensor.</string>
+    <string name="fingerprint_recognized">Fingerprint recognized.</string>
 </resources>
