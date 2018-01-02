@@ -38,9 +38,9 @@ class FingerprintDialog : DialogFragment(), FingerprintController.Callback {
         )
     }
 
-    private var mCryptoObject: FingerprintManagerCompat.CryptoObject? = null
-    private var mKeyStore: KeyStore? = null
-    private var mKeyGenerator: KeyGenerator? = null
+    private var cryptoObject: FingerprintManagerCompat.CryptoObject? = null
+    private var keyStore: KeyStore? = null
+    private var keyGenerator: KeyGenerator? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater?.inflate(R.layout.dialog_fingerprint, container, false)
@@ -57,13 +57,13 @@ class FingerprintDialog : DialogFragment(), FingerprintController.Callback {
         super.onCreate(savedInstanceState)
 
         try {
-            mKeyStore = KeyStore.getInstance("AndroidKeyStore")
+            keyStore = KeyStore.getInstance("AndroidKeyStore")
         } catch (e: KeyStoreException) {
             throw RuntimeException("Failed to get an instance of KeyStore", e)
         }
 
         try {
-            mKeyGenerator = KeyGenerator
+            keyGenerator = KeyGenerator
                     .getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
         } catch (e: NoSuchAlgorithmException) {
             throw RuntimeException("Failed to get an instance of KeyGenerator", e)
@@ -85,7 +85,7 @@ class FingerprintDialog : DialogFragment(), FingerprintController.Callback {
         }
 
         if (initCipher(defaultCipher, DEFAULT_KEY_NAME)) {
-            mCryptoObject = FingerprintManagerCompat.CryptoObject(defaultCipher)
+            cryptoObject = FingerprintManagerCompat.CryptoObject(defaultCipher)
         }
     }
 
@@ -93,7 +93,7 @@ class FingerprintDialog : DialogFragment(), FingerprintController.Callback {
         super.onResume()
 
         dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        mCryptoObject?.let {
+        cryptoObject?.let {
             controller.startListening(it)
         }
     }
@@ -112,6 +112,8 @@ class FingerprintDialog : DialogFragment(), FingerprintController.Callback {
     }
 
     /**
+     * Lifted code from the Google samples -
+     *
      * Initialize the [Cipher] instance with the created key in the
      * [.createKey] method.
      *
@@ -122,8 +124,8 @@ class FingerprintDialog : DialogFragment(), FingerprintController.Callback {
      */
     private fun initCipher(cipher: Cipher, keyName: String): Boolean {
         try {
-            mKeyStore?.load(null)
-            val key = mKeyStore?.getKey(keyName, null) as SecretKey
+            keyStore?.load(null)
+            val key = keyStore?.getKey(keyName, null) as SecretKey
             cipher.init(Cipher.ENCRYPT_MODE, key)
             return true
         } catch (e: KeyPermanentlyInvalidatedException) {
@@ -141,7 +143,6 @@ class FingerprintDialog : DialogFragment(), FingerprintController.Callback {
         } catch (e: InvalidKeyException) {
             throw RuntimeException("Failed to init Cipher", e)
         }
-
     }
 
     /**
@@ -159,12 +160,12 @@ class FingerprintDialog : DialogFragment(), FingerprintController.Callback {
      * enrolled.). Note that this parameter is only valid if
      * the app works on Android N developer preview.
      */
-    fun createKey(keyName: String, invalidatedByBiometricEnrollment: Boolean) {
+    private fun createKey(keyName: String, invalidatedByBiometricEnrollment: Boolean) {
         // The enrolling flow for fingerprint. This is where you ask the user to set up fingerprint
         // for your flow. Use of keys is necessary if you need to know if the set of
         // enrolled fingerprints has changed.
         try {
-            mKeyStore?.load(null)
+            keyStore?.load(null)
             // Set the alias of the entry in Android KeyStore where the key will appear
             // and the constrains (purposes) in the constructor of the Builder
 
@@ -184,8 +185,8 @@ class FingerprintDialog : DialogFragment(), FingerprintController.Callback {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 builder.setInvalidatedByBiometricEnrollment(invalidatedByBiometricEnrollment)
             }
-            mKeyGenerator?.init(builder.build())
-            mKeyGenerator?.generateKey()
+            keyGenerator?.init(builder.build())
+            keyGenerator?.generateKey()
         } catch (e: NoSuchAlgorithmException) {
             throw RuntimeException(e)
         } catch (e: InvalidAlgorithmParameterException) {
