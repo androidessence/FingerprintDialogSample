@@ -38,8 +38,22 @@ class FingerprintDialog : DialogFragment(), FingerprintController.Callback {
         )
     }
 
+    /**
+     * CryptoObject is a wrapper class for any cryptography required by the FingerprintManager.
+     * https://developer.android.com/reference/android/support/v4/hardware/fingerprint/FingerprintManagerCompat.CryptoObject.html
+     */
     private var cryptoObject: FingerprintManagerCompat.CryptoObject? = null
+
+    /**
+     * KeyStore is the device's storage for any cryptographic keys and certificates. We use this to get a key for the fingerprint manager.
+     * https://developer.android.com/reference/java/security/KeyStore.html
+     */
     private var keyStore: KeyStore? = null
+
+    /**
+     * This class is used to generate the keys that were reference from the [keyStore].
+     * https://developer.android.com/reference/javax/crypto/KeyGenerator.html
+     */
     private var keyGenerator: KeyGenerator? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -112,7 +126,7 @@ class FingerprintDialog : DialogFragment(), FingerprintController.Callback {
     }
 
     /**
-     * Lifted code from the Google samples -
+     * Lifted code from the Google samples - https://github.com/googlesamples/android-FingerprintDialog/blob/master/kotlinApp/app/src/main/java/com/example/android/fingerprintdialog/MainActivity.kt
      *
      * Initialize the [Cipher] instance with the created key in the
      * [.createKey] method.
@@ -146,7 +160,7 @@ class FingerprintDialog : DialogFragment(), FingerprintController.Callback {
     }
 
     /**
-     * Lifted code from the Google Samples -
+     * Lifted code from the Google Samples - https://github.com/googlesamples/android-FingerprintDialog/blob/master/kotlinApp/app/src/main/java/com/example/android/fingerprintdialog/MainActivity.kt
      *
      * Creates a symmetric key in the Android Key Store which can only be used after the user has
      * authenticated with fingerprint.
