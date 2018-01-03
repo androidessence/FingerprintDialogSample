@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyPermanentlyInvalidatedException
 import android.security.keystore.KeyProperties
-import android.support.annotation.RequiresApi
 import android.support.v4.app.DialogFragment
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat
 import android.view.LayoutInflater
@@ -24,7 +23,6 @@ import javax.crypto.SecretKey
 /**
  * DialogFragment that prompts the user to authenticate their fingerprint.
  */
-@RequiresApi(23)
 class FingerprintDialog : DialogFragment(), FingerprintController.Callback {
 
     private val controller: FingerprintController by lazy {

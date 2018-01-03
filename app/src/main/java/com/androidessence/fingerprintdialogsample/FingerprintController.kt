@@ -1,5 +1,6 @@
 package com.androidessence.fingerprintdialogsample
 
+import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.support.v4.hardware.fingerprint.FingerprintManagerCompat
 import android.support.v4.os.CancellationSignal
@@ -41,11 +42,17 @@ class FingerprintController(
         get() = fingerprintManager.isHardwareDetected && fingerprintManager.hasEnrolledFingerprints()
 
     /**
+     * Helper variable to get the context from one of the views. The view used is arbitrary.
+     */
+    private val context: Context
+        get() = errorText.context
+
+    /**
      * Runnable that resets the icon and error text as necessary.
      */
     private val resetErrorTextRunnable: Runnable = Runnable {
-        errorText.setTextColor(ContextCompat.getColor(errorText.context, R.color.hint_color))
-        errorText.text = errorText.context.getString(R.string.touch_sensor)
+        errorText.setTextColor(ContextCompat.getColor(context, R.color.hint_color))
+        errorText.text = context.getString(R.string.touch_sensor)
         icon.setImageResource(R.drawable.ic_fingerprint_white_24dp)
     }
 
